@@ -56,9 +56,9 @@ namespace Caffeine
             INPUT[] input = new INPUT[1];
             input[0].type = INPUT_KEYBOARD;
             input[0].U.ki.wVk = key;
-            SendInput((uint)input.Length, input, Marshal.SizeOf(input.GetType().GetElementType()) * input.Length);
+            SendInput((uint)input.Length, input, Marshal.SizeOf(typeof(INPUT)));
         }
-        public static void SetCursorPos(int xCoord, int yCoord)
+        public static void MoveMouse(int xCoord, int yCoord)
         {
             INPUT[] input = new INPUT[1];
             input[0].type = INPUT_MOUSE;
@@ -66,7 +66,7 @@ namespace Caffeine
             input[0].U.mi.dy = CalculateAbsoluteCoordinateY(yCoord);
             input[0].U.mi.mouseData = 0;
             input[0].U.mi.dwFlags = MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_MOVE;
-            SendInput((uint)input.Length, input, Marshal.SizeOf(input.GetType().GetElementType()) * input.Length);
+            SendInput((uint)input.Length, input, Marshal.SizeOf(typeof(INPUT)));
         }
     }
     internal struct LASTINPUTINFO
@@ -85,11 +85,11 @@ namespace Caffeine
     internal struct InputUnion
     {
         [FieldOffset(0)]
-        internal MOUSEINPUT mi;
+        public MOUSEINPUT mi;
         [FieldOffset(0)]
-        internal KEYBDINPUT ki;
+        public KEYBDINPUT ki;
         [FieldOffset(0)]
-        internal HARDWAREINPUT hi;
+        public HARDWAREINPUT hi;
     }
     [StructLayout(LayoutKind.Sequential)]
     internal struct MOUSEINPUT
@@ -105,7 +105,7 @@ namespace Caffeine
     internal struct KEYBDINPUT
     {
         public VirtualKey wVk;
-        public short wScan;
+        public ushort wScan;
         public uint dwFlags;
         public uint time;
         public UIntPtr dwExtraInfo;
@@ -114,15 +114,15 @@ namespace Caffeine
     internal struct HARDWAREINPUT
     {
         public uint uMsg;
-        public short wParamL;
-        public short wParamH;
+        public ushort wParamL;
+        public ushort wParamH;
     }
     public enum SystemMetric
     {
         SM_CXSCREEN = 0,
         SM_CYSCREEN = 1,
     }
-    public enum VirtualKey : short // https://docs.microsoft.com/en-us/windows/win32/inputdev/virtual-key-codes
+    public enum VirtualKey : ushort // https://docs.microsoft.com/en-us/windows/win32/inputdev/virtual-key-codes
     {
         VK_A = 0x41,
         VK_B = 0x42,
